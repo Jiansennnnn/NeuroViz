@@ -5,19 +5,18 @@ from datetime import datetime
 import os
 import seaborn as sns
 
-def generate_chart_general(data,id_path):
+
+def generate_chart_general(data,analysis_results):
     try:
         # 生成直方图
-        histogram_img_base64, histogram_img_path = generate_graph_histogram(data,id_path)
+        histogram_img_base64 = generate_graph_histogram(data)
 
         # 生成散点图
-        scatter_img_base64, scatter_img_path = generate_scatter_plot(data,id_path)
+        scatter_img_base64 = generate_scatter_plot(data,analysis_results)
 
         return {
             "histogram_img_base64": histogram_img_base64,
-            "scatter_img_base64": scatter_img_base64,
-            "histogram_img_path": histogram_img_path,
-            "scatter_img_path" : scatter_img_path 
+            "scatter_img_base64": scatter_img_base64
         }
     except ValueError as e:
         return {"error": str(e)}
@@ -25,9 +24,7 @@ def generate_chart_general(data,id_path):
         return {"error": f"An unexpected error occurred: {str(e)}"}
 
 
-
-
-def generate_graph_histogram(data,id_path):
+def generate_graph_histogram(data):
     # 图片存储地址
     output_path = 'graph_place/graph_histogram'
 
@@ -51,15 +48,11 @@ def generate_graph_histogram(data,id_path):
     # 保存图表到文件
     file_path = output_path + "/" + filename
     plt.savefig(file_path)
-
-    #save to file knowledgebaes by id
-    file_path = os.path.join(id_path, filename)
-    plt.savefig(file_path)
     plt.close()
-    return img_base64, file_path
+    return img_base64
 
 
-def generate_scatter_plot(data,id_path):
+def generate_scatter_plot(data, analysis_results):
     # 图片存储地址
     output_path = 'graph_place/graph_scatter'
 
@@ -70,12 +63,16 @@ def generate_scatter_plot(data,id_path):
     # 获取数值列
     numeric_columns = data.select_dtypes(include='number').columns
 
-    if len(numeric_columns) < 2:
-        raise ValueError("Not enough numeric columns to generate a scatter plot")
+    x = analysis_results['xy_fields']['x']
+    y = analysis_results['xy_fields']['y']
 
-    # 选择前两个数值列作为X轴和Y轴
-    x_column = numeric_columns[1]
-    y_column = numeric_columns[0]
+    if x and y:
+        x_column = x
+        y_column = y
+    else:
+        # 默认选择前两个数值列作为X轴和Y轴
+        x_column = numeric_columns[1]
+        y_column = numeric_columns[0]
 
     # 生成散点图
     plt.figure(figsize=(10, 6))
@@ -97,14 +94,9 @@ def generate_scatter_plot(data,id_path):
     # 保存图表到文件
     file_path = os.path.join(output_path, filename)
     plt.savefig(file_path)
-
-    
-    #save to file knowledgebaes by id
-    file_path = os.path.join(id_path, filename)
-    plt.savefig(file_path)
     plt.close()
-    
-    return img_base64, file_path
+
+    return img_base64
 
 
 def generate_chart_customized(data):
