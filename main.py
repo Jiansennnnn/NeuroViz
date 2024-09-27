@@ -5,10 +5,12 @@ from file_reader import *
 from quality_checker import *
 from report_generator import *
 from QwenModel_Client import QwenClient
-
+from util.extract_file_KB import *
+from Idea_core.Pre_process_for_Model import *
 def process(file_path):
     # 读取 Excel 文件
-    data = read_excel(file_path)
+    data, data_id = read_excel(file_path)
+    has_content, file_id_dir = create_and_check_directory(data_id)
 
     # 数据质量监测
     quality_report = check_quality(data)
@@ -28,20 +30,30 @@ def process(file_path):
     report = generate_report_general(quality_report,analysis_results)
 
     # 生成图表
-    chart_base64 = generate_chart_general(clean_data,analysis_results)
+    selected_keys = ["histogram_img_base64", "scatter_img_base64"]
+    chart_set = generate_chart_general(clean_data,analysis_results,file_id_dir)
+    chart_base64 = {key: chart_set[key] for key in selected_keys if key in chart_set}
+    #Img_path
+    selected_keys = ["histogram_img_path", "scatter_img_path"]
+    Img_path =  {key: chart_set[key] for key in selected_keys if key in chart_set}
 
-    return {"report": report, "chart_base64": chart_base64}
+
+
+    return {"report": report, "chart_base64": chart_base64}, Img_path
 
 
 def main():
-    file_path = 'test.xlsx'
+    file_path = 'test.xlsx' ## FE EXCEL API
 
     # 处理数据
-    result = process(file_path)
-
+    result,img_path = process(file_path) ## process API
+    
+    # Idea from Qwen
+    Idea_All = get_response_Idea(img_path,result['report'])
 
     print(result['report'])
     print(f"Chart Base64: {result['chart_base64']}")
+    print(Idea_All)
 
 
 if __name__ == "__main__":
