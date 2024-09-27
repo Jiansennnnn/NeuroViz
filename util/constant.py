@@ -5,26 +5,7 @@ Model_PARAMS_Compute = {
     "top_p": 0.45,
     "temperature": 0.2
 }
-'''
-Model_Prompt_Excel = {
-    "prompt": "Given an input that is a string denoting data of cells \
-        in an Excel spreadsheet. The input spreadsheet contains many tuples, \
-        describing the cells with content in the spreadsheet. Each tuple consists \
-        of two elements separated by a ’|’: the cell content and the cell address/region,\
-        like (Year|A1), ( |A1) or (IntNum|A1:B3). The content in some cells \
-        such as ’#,##0’/’d-mmm-yy’/’H:mm:ss’,etc., represents the CELL DATA FORMATS \
-        of Excel. The content in some cells such as ’IntNum’/’DateData’/’EmailData’,\
-        etc., represents a category of data with the same format and similar semantics. \
-        For example, ’IntNum’ represents integer type data, and ’ScientificNum’ represents scientific notation \
-        type data. ’A1:B3’ represents a region in a spreadsheet, from the first row to the third row and from \
-        column A to column B. Some cells with empty content in the spreadsheet are not entered. \
-        Now you should tell me the range of the table in a format like A2:D5, and the range of the table should \
-        only CONTAIN HEADER REGION and the data region. DON’T include the title or comments. Note that \
-        there can be more than one table in a string, so you should return all the RANGE. DON’T ADD OTHER WORDS OR EXPLANATION. INPUT:"
 
-}
-
-'''
 
 LLM_PARAMS = {
     "system_prompt": """

@@ -2,27 +2,9 @@ from util import *
 import numpy as np
 import pandas as pd
 import openpyxl 
-
 import os
 import dashscope
 
-
-
-
-def correlation_analyze(df):
-
-    correlations = df.corr()
-    
-    # avg_correlations for columns
-    avg_correlations = correlations.mean(axis=1)
-    response_variable = avg_correlations.idxmax()
-    
-    return response_variable, correlations  # + list of columns name
-
-
-
-import os
-import dashscope
 from util.constant import *
 from util.models import Response_Excel_Range
 import time
