@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def _get_response(attempt: int, user_prompt: str):
     temperature = min(Model_PARAMS_Compute['temperature'] + 0.2 * attempt, 1.0)
-    sys_prompt = LLM_PARAMS['system_prompt']
+    sys_prompt = LLM_PARAMS_Idea['system_prompt']
     messages = [
         {'role': 'system', 'content': [{'text': sys_prompt}]},
         {'role': 'user', 'content': user_prompt}
@@ -32,13 +32,14 @@ def _get_response(attempt: int, user_prompt: str):
         messages=messages,
         result_format='message'
         )
+
     return response
 
 #async def get_response(img_path: dict, report: dict):
-def get_response_FactorDetermination(img_path: dict, report: str, corr: str):
+def get_response_Idea(img_path: dict, report: str):
     #selected_keys = ['corr_matrix', 'report']
     #report_msg = {key: report[key] for key in selected_keys if key in report}
-    combined_text = f"{corr}\n{report}"
+    combined_text = report
     user_msg = [
             {"image": img_path['histogram_img_path']},
             {"image": img_path['scatter_img_path']},

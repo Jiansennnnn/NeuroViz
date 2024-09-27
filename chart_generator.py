@@ -6,17 +6,19 @@ import os
 import seaborn as sns
 
 
-def generate_chart_general(data,analysis_results):
+def generate_chart_general(data,analysis_results,id_path):
     try:
         # 生成直方图
-        histogram_img_base64 = generate_graph_histogram(data)
+        histogram_img_base64, histogram_img_path = generate_graph_histogram(data,id_path)
 
         # 生成散点图
-        scatter_img_base64 = generate_scatter_plot(data,analysis_results)
+        scatter_img_base64, scatter_img_path = generate_scatter_plot(data,analysis_results,id_path)
 
         return {
             "histogram_img_base64": histogram_img_base64,
-            "scatter_img_base64": scatter_img_base64
+            "scatter_img_base64": scatter_img_base64,
+            "histogram_img_path": histogram_img_path,
+            "scatter_img_path" : scatter_img_path 
         }
     except ValueError as e:
         return {"error": str(e)}
@@ -24,7 +26,7 @@ def generate_chart_general(data,analysis_results):
         return {"error": f"An unexpected error occurred: {str(e)}"}
 
 
-def generate_graph_histogram(data):
+def generate_graph_histogram(data,id_path):
     # 图片存储地址
     output_path = 'graph_place/graph_histogram'
 
@@ -48,11 +50,15 @@ def generate_graph_histogram(data):
     # 保存图表到文件
     file_path = output_path + "/" + filename
     plt.savefig(file_path)
+
+    #save to file knowledgebaes by id
+    file_path = os.path.join(id_path, filename)
+    plt.savefig(file_path)
     plt.close()
-    return img_base64
+    return img_base64 ,file_path
 
 
-def generate_scatter_plot(data, analysis_results):
+def generate_scatter_plot(data, analysis_results,id_path):
     # 图片存储地址
     output_path = 'graph_place/graph_scatter'
 
@@ -89,14 +95,19 @@ def generate_scatter_plot(data, analysis_results):
 
     # 生成带有时间戳的文件名
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
     filename = f'scatter_{timestamp}.png'
 
     # 保存图表到文件
     file_path = os.path.join(output_path, filename)
     plt.savefig(file_path)
+    
+    #save to file knowledgebaes by id
+    file_path = os.path.join(id_path, filename)
+    plt.savefig(file_path)
     plt.close()
 
-    return img_base64
+    return img_base64,file_path
 
 
 def generate_chart_customized(data):
