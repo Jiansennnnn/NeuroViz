@@ -34,16 +34,19 @@ class DataAnalyzer:
 
         ### 输出格式要求
         1. **统计分析字段**：请列出适合进行统计分析的字段，并且类型一定为数字类型的字段。格式为 `统计分析字段: field1, field2, field3`。
-        2. **X轴字段**：请推荐一个适合用作X轴的字段，格式为 `X轴字段: field1`。
-        3. **Y轴字段**：请推荐一个适合用作Y轴的字段，格式为 `Y轴字段: field2`。
+        2. **Y轴字段**：请推荐一个适合用作Y轴(可用于统计分析方法的因变量)的字段，格式为 `Y轴字段: field1`。
+        2. **X轴字段**：请推荐一个或多个适合用作X轴(可用于统计分析方法的自变量)的字段，格式为 `X轴字段: field2，field3，field4`。
         4. 在**统计分析字段**中返回的字段务必为数字类型，请通过我传输给你样本数据进行判断，可以是整数或者浮点。
         
+        ** 请务必确保输出X轴字段和Y轴字段的字段与给定的字段信息列表中的字段名一致**
         
+        ** 如果输出的X轴字段和Y轴字段的字段有包含由于特殊字符（如单引号 '）转义所出现的字符（例如' 被转义成了 \'），请务必保证最后输出时去掉此类转义字符。**
+
         
         ### 示例
-        统计分析字段$: deposit, age
+        统计分析字段$: deposit, age， others
         X轴字段$: age
-        Y轴字段$: deposit
+        Y轴字段$: deposit，others
         
         注意：请在response中的'统计分析字段'，'X轴字段'，'Y轴字段'三个开头后都加上符号$，以便我能准确截取字符串
         """
@@ -66,6 +69,14 @@ class DataAnalyzer:
                 xy_fields['y'] = line.split(":")[1].strip()
 
         return statistical_fields, xy_fields
+
+
+#! TO DO
+#! Multi_factor analysis
+
+#def select_Multi_factors_statistical_fields(self):
+
+
 
 
     #计算指定字段的描述性统计量

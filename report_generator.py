@@ -42,5 +42,32 @@ def generate_report_general(quality_report, analysis_results):
     return report
 
 
-def generate_report_customized(quality_report, analysis_results):
-    pass
+def generate_report_Json_structured(quality_report, analysis_results):
+    
+    descriptive_statistics = {}
+    for field, stats in analysis_results['descriptive_statistics'].items():
+        descriptive_statistics[field] = {}
+        for stat, value in stats.items():
+            descriptive_statistics[field][stat] = value
+    
+    correlation_matrix = {}
+    for field, row in analysis_results['correlation_matrix'].items():
+        # Add the field as a key in the correlation_matrix dictionary
+        correlation_matrix[field] = {}
+        for other_field, value in row.items():
+            correlation_matrix[field][other_field] = value
+        
+    report_Json_structured = {
+        "title": "Data Quality and Analysis Report",
+        "missing_values": quality_report.get('missing_values',{}),
+        "outliers": quality_report.get('outliers',{}),
+        "analysis_results": {
+            "statistical_analysis_fields": analysis_results['statistical_fields'],
+            "x_axis_fields": [x.strip() for x in analysis_results['xy_fields']['x'].split(',')],
+            "y_axis_field": analysis_results['xy_fields']['y'],
+            "descriptive_statistics": descriptive_statistics,
+            "correlation_matrix": correlation_matrix
+        }
+    }
+    
+    return report_Json_structured

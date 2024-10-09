@@ -1,5 +1,6 @@
 import os
-
+import stat
+#shutil.rmtree('/path/to/your/dir/')
 
 
 def delete_directory_contents():
@@ -29,6 +30,7 @@ def delete_directory_contents():
             os.remove(file_path)
         for dir in dirs:
             dir_path = os.path.join(root, dir)
+            os.chmod(dir_path ,stat.S_IWRITE)
             os.rmdir(dir_path)
     for root, dirs, files in os.walk(directory1, topdown=False):
         for file in files:
@@ -36,6 +38,7 @@ def delete_directory_contents():
             os.remove(file_path)
         for dir in dirs:
             dir_path = os.path.join(root, dir)
+            os.chmod(dir_path ,stat.S_IWRITE)
             os.rmdir(dir_path)
     for root, dirs, files in os.walk(directory2, topdown=False):
         for file in files:
@@ -43,6 +46,7 @@ def delete_directory_contents():
             os.remove(file_path)
         for dir in dirs:
             dir_path = os.path.join(root, dir)
+            os.chmod(dir_path ,stat.S_IWRITE)
             os.rmdir(dir_path)
 
 
