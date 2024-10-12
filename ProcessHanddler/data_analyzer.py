@@ -1,5 +1,5 @@
 import pandas as pd
-from QwenModel_Client import QwenClient
+from .QwenModel_Client import QwenClient
 
 class DataAnalyzer:
     def __init__(self, data: pd.DataFrame, qwen_client):

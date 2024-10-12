@@ -1,10 +1,10 @@
-import data_analyzer
-from chart_generator import *
-from data_cleaning import *
-from file_reader import *
-from quality_checker import *
-from report_generator import *
-from QwenModel_Client import QwenClient
+from ProcessHanddler.data_analyzer import *
+from ProcessHanddler.chart_generator import *
+from ProcessHanddler.data_cleaning import *
+from ProcessHanddler.file_reader import *
+from ProcessHanddler.quality_checker import *
+from ProcessHanddler.report_generator import *
+from ProcessHanddler.QwenModel_Client import QwenClient
 from util.extract_file_KB import *
 from util.PackData import *
 from Idea_core.Pre_process_for_Model import *
@@ -23,7 +23,7 @@ def process(file_path):
     qwen_client = QwenClient()
 
     # 数据分析
-    analysis_results = data_analyzer.analyze_data(clean_data,qwen_client)
+    analysis_results = analyze_data(clean_data,qwen_client)
 
 
 
