@@ -49,6 +49,10 @@ def backupfile(id_name):
             # copy file to destination folder
             shutil.copy(source_file, destination_file)
             print(f"Copied {file_name} to {output_folder}")
+            
+            os.remove(source_file)
+
+            print(f"Deleted {file_name} from Landing Place : {UPLOAD_LANDING_FOLDER}")
   
     
 

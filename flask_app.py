@@ -10,8 +10,9 @@ from util.extract_file_KB import *
 from util.PackData import *
 from Idea_core.Pre_process_for_Model import *
 import os
-from flask_util.config import ALLOWED_EXTENSIONS,UPLOAD_LANDING_FOLDER
+from flask_util.config import ALLOWED_EXTENSIONS,UPLOAD_LANDING_FOLDER, SCRIPT_PATH
 from werkzeug.utils import secure_filename
+import subprocess
 
 
 logging.basicConfig(filename="backend_main.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -103,16 +104,26 @@ async def upload_and_process():
             
             # Pack all the data to FE Json format
             json_report = PackDataToJson(report_structured,img_path,result['chart_base64'],Idea_All)
+            json_source = PackSourceToJson(clean_data)
             
             return jsonify({
                 "status": "succeed",
                 "message": "Process Finished",
-                "json_report": json_report
+                "json_report": json_report,
+                "json_source": json_source
             }), 200
         except Exception as e:
             return jsonify({"status": "error", "message": f"Error in generating response: {e}"}), 400
 
-
+@app.route('/ClearHistoryFiles', methods=['GET'])
+def ClearHistoryFiles():
+    try:
+        # 调用 Python 脚本
+        subprocess.run(['python', SCRIPT_PATH], check=True)
+        return jsonify({'message': 'History files cleared successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 # 配置文件
 app.config.from_object('flask.config.Config')
 app.config
