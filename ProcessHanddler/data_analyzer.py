@@ -96,6 +96,18 @@ class DataAnalyzer:
     def correlation_matrix(self, fields=None):
         if fields is None:
             fields = self.data.select_dtypes(include='number').columns
+
+        # Compute correlation matrix
+        corr_matrix = self.data[fields], corr()
+
+        # Generate  star counts based on correlation values
+        star_values = []
+        for field in fields:
+            # 计算平均相关性，排除字段本身的相关性
+            avg_corr = corr_matrix[field].drop(index=field).abs().mean()
+            # 将平均相关性映射到1-5的推荐值，确保星级在1~5
+            star_count = max(1, min(5, int(avg_corr * 5)))
+            star_result.append({"field": field, "star_count": star_count})
         return self.data[fields].corr()
 
 def analyze_data(data, qwen_client):
