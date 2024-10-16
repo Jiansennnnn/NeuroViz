@@ -12,3 +12,5 @@ ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 target_file_path = os.path.join(current_dir, '..', 'util', 'empty_history.py')
 
 SCRIPT_PATH = target_file_path
+
+PORT_NO = 7777

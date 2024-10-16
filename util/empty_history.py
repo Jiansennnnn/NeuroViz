@@ -12,7 +12,8 @@ def delete_directory_contents():
     directory1 = os.path.normpath(os.path.join(current_dir, relative_target_path))
     relative_target_path  = os.path.join('..', 'graph_place', 'graph_scatter')
     directory2 = os.path.normpath(os.path.join(current_dir, relative_target_path))
-
+    relative_target_path  = os.path.join('..', 'flask_util', 'backup')
+    directory3 = os.path.normpath(os.path.join(current_dir, relative_target_path))
     
     if not os.path.exists(directory):
         print(f"Directory '{directory}' does not exist.")
@@ -22,6 +23,9 @@ def delete_directory_contents():
         return
     if not os.path.exists(directory2):
         print(f"Directory '{directory2}' does not exist.")
+        return
+    if not os.path.exists(directory3):
+        print(f"Directory '{directory3}' does not exist.")
         return
 
     for root, dirs, files in os.walk(directory, topdown=False):
@@ -48,6 +52,13 @@ def delete_directory_contents():
             dir_path = os.path.join(root, dir)
             os.chmod(dir_path ,stat.S_IWRITE)
             os.rmdir(dir_path)
-
+    for root, dirs, files in os.walk(directory3, topdown=False):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            os.chmod(dir_path ,stat.S_IWRITE)
+            os.rmdir(dir_path)
 
 delete_directory_contents()
