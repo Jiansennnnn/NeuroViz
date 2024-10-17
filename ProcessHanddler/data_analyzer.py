@@ -48,7 +48,9 @@ class DataAnalyzer:
         X轴字段$: age
         Y轴字段$: deposit，others
         
-        注意：请在response中的'统计分析字段'，'X轴字段'，'Y轴字段'三个开头后都加上符号$，以便我能准确截取字符串
+        注意：请在response中的'统计分析字段'，'X轴字段'，'Y轴字段'三个字段后都加上符号$，且每行字段结尾出不需要加上符号$，例如： `X轴字段$: variable_A，variable_B,variable_C`
+        
+        请严格按照以上该要求输出结果
         """
 
         model_response = self.qwen_client.call_qwen_api(prompt)
@@ -96,7 +98,34 @@ class DataAnalyzer:
     def correlation_matrix(self, fields=None):
         if fields is None:
             fields = self.data.select_dtypes(include='number').columns
-        return self.data[fields].corr()
+        
+        # Compute correlation matrix
+        corr_matrix = self.data[fields].corr()
+
+        # Generate  star counts based on correlation values
+        star_values = []
+        for field in fields:
+            # 计算平均相关性，排除字段本身的相关性
+            avg_corr = corr_matrix[field].drop(index=field).abs().mean()
+            # 将平均相关性映射到1-5的推荐值，确保星级在1~5
+            star_count = max(1, min(5, int(avg_corr * 5)))
+            star_values.append({"field": field, "star_count": star_count})
+            
+        return corr_matrix
+
+#
+#def start_algorithm(xy_fields,corr_matrix):
+#    
+#    # Generate  star counts based on correlation values
+#    star_values = []
+#    # By x Field
+#    fields = xy_fields['x']
+#    for field in fields:
+#        # 计算平均相关性，排除字段本身的相关性
+#        avg_corr = corr_matrix[field].drop(index=field).abs().mean()
+#        
+
+    
 
 def analyze_data(data, qwen_client):
     analyzer = DataAnalyzer(data, qwen_client)

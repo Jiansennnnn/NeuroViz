@@ -17,6 +17,8 @@ def handle_missing_and_outliers(data):
         outlier_condition = (data[col] < q_low) | (data[col] > q_hi)
         data.loc[outlier_condition, col] = median
 
+    data = data.infer_objects()
+
     return data
 
 def data_cleaning_customized(data):

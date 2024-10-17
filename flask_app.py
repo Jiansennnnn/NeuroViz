@@ -166,6 +166,7 @@ async def upload_and_process():
                 "json_source": json_source
             }), 200
         except Exception as e:
+            logger.info(f"Process Logic Failed in = {e}")
             return jsonify({"status": "error", "message": f"Error in generating response: {e}"}), 400
 
 @app.route('/ClearHistoryFiles', methods=['GET'])
