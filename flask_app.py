@@ -17,6 +17,7 @@ import subprocess
 import socket
 
 
+
 logging.basicConfig(filename="backend_main.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -122,12 +123,16 @@ async def upload_and_process():
             # 数据分析
             logger.info(data)
             logger.info(clean_data)
-            analysis_results = analyze_data(clean_data,qwen_client)
+            analysis_results,start_count = analyze_data(clean_data,qwen_client) #! CAll 1
             logger.info(clean_data)
             logger.info("**analyze_data**............ succeeded")
-
-
-
+            
+            # asyncio to get comment for Corr picture
+            #executor = ThreadPoolExecutor()
+            #corr_comment = executor.submit(partial(run_comp_stat, analysis_results['correlation_matrix'], analysis_results['xy_fields'], analysis_results['statistical_fields'] ))
+            #! Call 2
+            corr_comment = await Get_comment(analysis_results['correlation_matrix'], analysis_results['xy_fields'], analysis_results['descriptive_statistics'])
+            
             # 生成报告
             report = generate_report_general(quality_report,analysis_results)
             report_structured = generate_report_Json_structured(quality_report,analysis_results)
@@ -150,7 +155,7 @@ async def upload_and_process():
 
             result,img_path,report_structured = {"report": report, "chart_base64": chart_base64}, Img_path, report_structured
             # Idea from Qwen
-            Idea_All = get_response_Idea(img_path,result['report'])
+            Idea_All = get_response_Idea(img_path,result['report']) #! Call 3
             logger.info("**Idea_Core_logics**............ succeeded")
             
             # Pack all the data to FE Json format
@@ -158,12 +163,15 @@ async def upload_and_process():
             json_source = PackSourceToJson(clean_data)
             logger.info("**Pack all the data to FE Json format**............ succeeded")
             
-                       
+            
             return jsonify({
                 "status": "succeed",
                 "message": "Process Finished",
                 "json_report": json_report,
-                "json_source": json_source
+                "json_source": json_source,
+                "start_count" : start_count,
+                "corr_comment": corr_comment
+
             }), 200
         except Exception as e:
             logger.info(f"Process Logic Failed in = {e}")

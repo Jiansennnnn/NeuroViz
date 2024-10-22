@@ -117,37 +117,34 @@ class DataAnalyzer:
 
 def start_algorithm(xy_fields,corr_matrix):
 
-   # Generate  star counts based on correlation values
-   star_values = []
-   # By x Field
-   fields_x = xy_fields['x'].split(', ')
-   fields_y = xy_fields['y'].split(', ')
-   avg_dict = dict()
-   for field in fields_x:
-       # 计算平均相关性，排除字段本身的相关性
-       # avg_corr = corr_matrix[field].drop(index=fields_y)
-       # 排除x字段本身以及x字段和y字段的相关性
-       avg_corr_x = corr_matrix[field].drop(index=field).drop(index=fields_y).abs().mean()
-       # 将x字段相关性放入avg_dict中
-       avg_dict[field] = avg_corr_x
-   # x字段相关性平均值
-   avg_x = np.mean(list(avg_dict.values()))
-   # y字段相关性平均值
-   avg_y = corr_matrix[fields_y].drop(index=fields_y).abs().mean()
-   # 权重,x=0.2 y=0.8
-   avg_total = (avg_x * 0.2) + (avg_y * 0.8)
-   if 0< avg_total[0] < 0.2:
-       return 1
-   elif 0.2 <= avg_total[0] < 0.4:
-       return 2
-   elif 0.4 <= avg_total[0] < 0.6:
-       return 3
-   elif 0.6 <= avg_total[0] < 0.8:
-       return 4
-   elif 0.8 <= avg_total[0] < 1.0:
-       return 5
-   else:
-       return 0
+    # Generate  star counts based on correlation values
+    star_values = []
+    # By x Field
+    fields_x = xy_fields['x'].split(', ')
+    fields_y = xy_fields['y'].split(', ')
+    avg_dict = dict()
+   
+    avg_y = corr_matrix[fields_y].drop(index=fields_y).abs().mean()
+    for field in fields_x:
+        # 计算平均相关性，排除字段本身的相关性
+        # avg_corr = corr_matrix[field].drop(index=fields_y)
+        # 排除x字段本身以及x字段和y字段的相关性
+        avg_corr_x = corr_matrix[field].drop(index=field).drop(index=fields_y).abs().mean()
+        # 将x字段相关性放入avg_dict中
+        avg_total = (avg_corr_x * 0.2) + (avg_y * 0.8)
+        if 0< avg_total[0] < 0.2:
+            avg_dict[field] = 1
+        elif 0.2 <= avg_total[0] < 0.4:
+            avg_dict[field] = 2
+        elif 0.4 <= avg_total[0] < 0.6:
+            avg_dict[field] = 3
+        elif 0.6 <= avg_total[0] < 0.8:
+            avg_dict[field] = 4
+        elif 0.8 <= avg_total[0] < 1.0:
+            avg_dict[field] = 5
+        else:
+            avg_dict[field] = 0
+    return avg_dict
 
     
 
@@ -162,7 +159,8 @@ def analyze_data(data, qwen_client):
             "descriptive_statistics": analyzer.descriptive_statistics(statistical_fields),
             "correlation_matrix": analyzer.correlation_matrix(statistical_fields)
     }
-    return results
+    start_count = start_algorithm(xy_fields, results['correlation_matrix'])
+    return results,start_count
 
 
 
