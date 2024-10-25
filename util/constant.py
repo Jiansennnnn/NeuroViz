@@ -5,10 +5,11 @@ Model_PARAMS_Compute = {
     "top_p": 0.45,
     "temperature": 0.2
 }
-
+#"model_name": "qwen-turbo-latest" for fast 
 Model_PARAMS_Comment = {
     "API_KEY": "sk-f2442c2f3d1e46259e647e880d0f606d",
-    "model_name": "qwen-turbo-0919",
+    "model_name": "qwen-plus-0206",
+    "response_format": {"type": "json_object"},
     'max_retries': 3,
     "top_p": 0.45,
     "temperature": 0.2
@@ -122,33 +123,6 @@ Example JSON format:
 
 {
   "target_variables": {
-    "age": {
-      "explanation": "The correlation matrix shows that 'age' has a moderate positive correlation with 'experience' (0.65), indicating that as 'age' increases, 'experience' tends to increase as well. 'age' also has a weak negative correlation with 'income' (-0.15), suggesting a small inverse relationship.",
-      
-      "analysis_suggestions": [
-        {
-          "Suggestion_No": "1",
-          "Suggestion": "Consider the potential multicollinearity between 'age' and 'experience' as their correlation (0.65) is moderately high, which could impact model performance."
-        },
-        {
-          "Suggestion_No": "2",
-          "Suggestion": "The weak correlation between 'age' and 'income' (-0.15) may indicate that 'income' could be excluded or deprioritized when predicting 'age'."
-        }
-      ],
-      
-      "relationship_insights": [
-        {
-          "Insight_No": "1",
-          "Variables": "'age' and 'experience'",
-          "Insight": "'age' shows a moderate positive correlation (0.65) with 'experience,' suggesting that 'experience' might be a useful predictor of 'age'."
-        },
-        {
-          "Insight_No": "2",
-          "Variables": "'age' and 'income'",
-          "Insight": "'age' has a weak negative correlation (-0.15) with 'income,' indicating limited predictive value of 'income' on 'age'."
-        }
-      ]
-    },
     
     "deposit": {
       "explanation": "The correlation matrix shows that 'deposit' has a strong positive correlation with 'savings' (0.78), meaning higher savings tend to correspond to higher deposits. It also has a weak negative correlation with 'loan_balance' (-0.12).",
@@ -209,10 +183,10 @@ Example JSON format:
 }
 
 Key Points:
-- target_variables: A JSON object where each target variable (e.g., age, deposit, interest_rate) has its own content.
+- target_variables: number of contents in this layer must be equal to the number of target variables provided from the input.
 - explanation: A simple overview of the correlation matrix for each target variable.
-- analysis_suggestions: Specific statistical recommendations based on the correlation matrix for each target variable.
-- relationship_insights: Detailed insights into the relationships between the target variable and other variables, including any significant correlations.
+- analysis_suggestions: Specific statistical recommendations based on the correlation matrix for each target variable (No more than 3 Suggestion_No contents).
+- relationship_insights: Detailed insights into the relationships between the target variable and other variables, including any significant correlations (No more than 3 Insight_No contents).
 
 ** Only output the JSON object, do not include any other text or comments.**
 The output must be structured this way, ensuring clarity for each target variable.
