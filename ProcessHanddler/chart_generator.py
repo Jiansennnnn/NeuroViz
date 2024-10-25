@@ -113,11 +113,18 @@ def generate_graph_histogram(data,id_path,xyfields):
             ax.set_xlabel('Value')
             ax.set_ylabel('Frequency')
             ax.legend()
-            x_range_point = group_medians['bin_midpoint']
-            y_range_point = group_medians[y_field]
+            #x_range_point = group_medians['bin_midpoint']
+            #y_range_point = group_medians[y_field]
+            #range_dict[field] = {
+            #    'x_range_point': x_range_point,
+            #    'y_range_point': y_range_point
+            #}
+            x_ticks = ax.get_xticks()
+            y_ticks = ax.get_yticks()
             range_dict[field] = {
-                'x_range_point': x_range_point,
-                'y_range_point': y_range_point
+                'x_range_point': x_ticks,
+                'y_range_point': y_ticks,
+                'group': data['bin_group']
             }
     plt.tight_layout()
     
@@ -198,11 +205,12 @@ def generate_scatter_plot(data, analysis_results,id_path):
             ax.set_xlabel(x_field)
             ax.set_ylabel(y_field)
             ax.legend()
-            x_range_point = group_medians['bin_midpoint']
-            y_range_point = group_medians[y_field]
+            x_ticks = ax.get_xticks()
+            y_ticks = ax.get_yticks()
             range_dict[x_field] = {
-                'x_range_point': x_range_point,
-                'y_range_point': y_range_point
+                'x_range_point': x_ticks,
+                'y_range_point': y_ticks,
+                'group': data['bin_group']
             }
 
     plt.tight_layout()
@@ -300,9 +308,14 @@ def generate_line_chart(data, analysis_results,id_path):
             ax.legend()
             x_range_point = group_medians['bin_midpoint']
             y_range_point = group_medians[y_field]
+            x_ticks = ax.get_xticks()
+            y_ticks = ax.get_yticks()
             range_dict[x_field] = {
                 'x_range_point': x_range_point,
-                'y_range_point': y_range_point
+                'y_range_point': y_range_point,
+                'x_label': x_ticks,
+                'y_label': y_ticks,
+                'group': data['bin_group']
             }       
             
             

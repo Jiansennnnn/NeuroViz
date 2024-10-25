@@ -12,6 +12,10 @@ def delete_directory_contents():
     directory1 = os.path.normpath(os.path.join(current_dir, relative_target_path))
     relative_target_path  = os.path.join('..', 'graph_place', 'graph_scatter')
     directory2 = os.path.normpath(os.path.join(current_dir, relative_target_path))
+    relative_target_path  = os.path.join('..', 'graph_place', 'graph_line')
+    directory4 = os.path.normpath(os.path.join(current_dir, relative_target_path))
+    relative_target_path  = os.path.join('..', 'graph_place', 'graph_pie')
+    directory5 = os.path.normpath(os.path.join(current_dir, relative_target_path))
     relative_target_path  = os.path.join('..', 'flask_util', 'backup')
     directory3 = os.path.normpath(os.path.join(current_dir, relative_target_path))
     
@@ -26,6 +30,12 @@ def delete_directory_contents():
         return
     if not os.path.exists(directory3):
         print(f"Directory '{directory3}' does not exist.")
+        return
+    if not os.path.exists(directory4):
+        print(f"Directory '{directory4}' does not exist.")
+        return
+    if not os.path.exists(directory5):
+        print(f"Directory '{directory5}' does not exist.")
         return
 
     for root, dirs, files in os.walk(directory, topdown=False):
@@ -60,5 +70,22 @@ def delete_directory_contents():
             dir_path = os.path.join(root, dir)
             os.chmod(dir_path ,stat.S_IWRITE)
             os.rmdir(dir_path)
+    for root, dirs, files in os.walk(directory4, topdown=False):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            os.chmod(dir_path ,stat.S_IWRITE)
+            os.rmdir(dir_path)
+    for root, dirs, files in os.walk(directory5, topdown=False):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            os.chmod(dir_path ,stat.S_IWRITE)
+            os.rmdir(dir_path)
+
 
 delete_directory_contents()

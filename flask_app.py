@@ -41,7 +41,7 @@ def allowed_file(filename):
 def serialize_dict(data):
     if isinstance(data, dict):
         return {k: serialize_dict(v) for k, v in data.items()}
-    elif isinstance(data, pd.Series) or isinstance(data, pd.Index):
+    elif isinstance(data, pd.Series) or isinstance(data, pd.Index) or isinstance(data, np.ndarray):
         return data.tolist()
     else:
         return data
