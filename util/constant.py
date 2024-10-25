@@ -209,7 +209,7 @@ Example JSON format:
 }
 
 Key Points:
-- target_variables: A JSON object where each target variable (e.g., age, deposit, interest_rate) has its own section.
+- target_variables: A JSON object where each target variable (e.g., age, deposit, interest_rate) has its own content.
 - explanation: A simple overview of the correlation matrix for each target variable.
 - analysis_suggestions: Specific statistical recommendations based on the correlation matrix for each target variable.
 - relationship_insights: Detailed insights into the relationships between the target variable and other variables, including any significant correlations.

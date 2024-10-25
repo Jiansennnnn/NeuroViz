@@ -38,6 +38,14 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def serialize_dict(data):
+    if isinstance(data, dict):
+        return {k: serialize_dict(v) for k, v in data.items()}
+    elif isinstance(data, pd.Series) or isinstance(data, pd.Index):
+        return data.tolist()
+    else:
+        return data
+
 def find_file_by_uid(file_uid, upload_folder):
 
     for filename in os.listdir(upload_folder):
@@ -131,7 +139,8 @@ async def upload_and_process():
             #executor = ThreadPoolExecutor()
             #corr_comment = executor.submit(partial(run_comp_stat, analysis_results['correlation_matrix'], analysis_results['xy_fields'], analysis_results['statistical_fields'] ))
             #! Call 2
-            corr_comment = await Get_comment(analysis_results['correlation_matrix'], analysis_results['xy_fields'], analysis_results['descriptive_statistics'])
+            corr_field_info = analysis_results['xy_fields']['x'].split(', ') + [analysis_results['xy_fields']['y']]
+            corr_comment = await Get_comment(analysis_results['correlation_matrix'], corr_field_info, analysis_results['descriptive_statistics'])
             
             # 生成报告
             report = generate_report_general(quality_report,analysis_results)
@@ -147,8 +156,12 @@ async def upload_and_process():
             #Img_path
             selected_keys = ["histogram_img_path", "scatter_img_path"]
             Img_path =  {key: chart_set[key] for key in selected_keys if key in chart_set}
+            #Img_range
+            selected_keys = ["histogram_img_range", "scatter_img_range","line_img_range", "pie_img_range", "Kmean_img_range"]
+            Img_range =  {key: chart_set[key] for key in selected_keys if key in chart_set}
+            Img_range_serializable = serialize_dict(Img_range)
             
-            
+                
             #File backup
             backupfile(data_id)
             logger.info("**backupfile**............ succeeded")
@@ -170,7 +183,8 @@ async def upload_and_process():
                 "json_report": json_report,
                 "json_source": json_source,
                 "start_count" : start_count,
-                "corr_comment": corr_comment
+                "corr_comment": corr_comment,
+                "Img_range" : Img_range_serializable
 
             }), 200
         except Exception as e:

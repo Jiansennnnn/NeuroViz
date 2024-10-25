@@ -17,6 +17,10 @@ import random
 logging.basicConfig(filename="main.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
+
+def remove_backticks(s):
+    return s.replace('```', '')
+
 def _get_response(attempt: int, user_prompt: str):
     temperature = min(Model_PARAMS_Compute['temperature'] + 0.2 * attempt, 1.0)
     sys_prompt = LLM_PARAMS_Idea['system_prompt']
@@ -112,7 +116,7 @@ async def Get_comment(corr_matrix, xy_fields, descriptive_statistics):
     combined_text = descriptive_statistics
     user_msg = [
             {"text": corr_matrix},
-            {"text": xy_fields},
+            {"text": str(xy_fields)},
             {"text": combined_text}
         ]
     max_retries = Model_PARAMS_Compute['max_retries']
@@ -136,7 +140,8 @@ async def Get_comment(corr_matrix, xy_fields, descriptive_statistics):
                     #input_tokens = response.usage.prompt_tokens
                     #output_tokens = response.usage.completion_tokens
                 #llm_response = Response_Excel_Range(**message_content)
-                llm_response = message_content
+                llm_response = remove_backticks(message_content)
+                llm_response = llm_response.replace('```json\n', '').replace('\n```', '').replace('json\n', '')
             except (JSONDecodeError, ValidationError) as e:
                 logger.error(f"Malformed response received at attempt {attempt + 1}/{max_retries}: {e}")
                 if attempt < max_retries - 1:
