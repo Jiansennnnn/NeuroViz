@@ -8,7 +8,7 @@ Model_PARAMS_Compute = {
 #"model_name": "qwen-turbo-latest" for fast 
 Model_PARAMS_Comment = {
     "API_KEY": "sk-f2442c2f3d1e46259e647e880d0f606d",
-    "model_name": "qwen-plus-0206",
+    "model_name": "qwen2.5-14b-instruct",
     "response_format": {"type": "json_object"},
     'max_retries': 3,
     "top_p": 0.45,

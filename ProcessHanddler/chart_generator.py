@@ -91,6 +91,7 @@ def generate_graph_histogram(data,id_path,xyfields):
     for i, field in enumerate(valid_x_fields):
         ax = axs if num_plots == 1 else axs[i]
         if field in data.columns and not data[field].isnull().all():
+            
              ##range logics
             min_val = data[field].min()
             max_val = data[field].max()
@@ -100,6 +101,7 @@ def generate_graph_histogram(data,id_path,xyfields):
             labels = [f'{bins[i]:.2f}-{bins[i + 1]:.2f}' for i in range(7)]
             # 分组
             data['bin_group'] = pd.cut(data[field], bins=bins, labels=labels, include_lowest=True)
+            data['bin_group'] = data['bin_group'].fillna(method='ffill')
             # 计算每个区间的中位数
             group_medians = data.groupby('bin_group')[y_field].median().reset_index()
             # 添加区间的中点
@@ -192,6 +194,7 @@ def generate_scatter_plot(data, analysis_results,id_path):
             labels = [f'{bins[i]:.2f}-{bins[i + 1]:.2f}' for i in range(7)]
             # 分组
             data['bin_group'] = pd.cut(data[x_field], bins=bins, labels=labels, include_lowest=True)
+            data['bin_group'] = data['bin_group'].fillna(method='ffill')
             # 计算每个区间的中位数
             group_medians = data.groupby('bin_group')[y_field].median().reset_index()
             # 添加区间的中点
@@ -291,6 +294,7 @@ def generate_line_chart(data, analysis_results,id_path):
             labels = [f'{bins[i]:.2f}-{bins[i + 1]:.2f}' for i in range(7)]
             # 分组
             data['bin_group'] = pd.cut(data[x_field], bins=bins, labels=labels, include_lowest=True)
+            data['bin_group'] = data['bin_group'].fillna(method='ffill')
             # 计算每个区间的中位数
             group_medians = data.groupby('bin_group')[y_field].median().reset_index()
             # 添加区间的中点
