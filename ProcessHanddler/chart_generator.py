@@ -91,7 +91,7 @@ def generate_graph_histogram(data,id_path,xyfields):
     for i, field in enumerate(valid_x_fields):
         ax = axs if num_plots == 1 else axs[i]
         if field in data.columns and not data[field].isnull().all():
-            
+            list_Info = []
              ##range logics
             min_val = data[field].min()
             max_val = data[field].max()
@@ -108,8 +108,9 @@ def generate_graph_histogram(data,id_path,xyfields):
             group_medians['bin_midpoint'] = group_medians['bin_group'].apply(
             lambda x: (float(x.split('-')[0]) + float(x.split('-')[1])) / 2)
             # 按X轴中点排序
-            group_medians = group_medians.sort_values(by='bin_midpoint')
-            
+            #group_medians = group_medians.sort_values(by='bin_midpoint')
+            n, bins, patches = ax.hist(data[field], bins=20, alpha=0.5, label=field, density=True, color=colors[i])
+
             ax.hist(data[field], bins=20, alpha=0.5, label=field, density=True, color=colors[i])
             ax.set_title(f'Distribution of {field}')
             ax.set_xlabel('Value')
@@ -121,12 +122,17 @@ def generate_graph_histogram(data,id_path,xyfields):
             #    'x_range_point': x_range_point,
             #    'y_range_point': y_range_point
             #}
+            
+            bin_centers = 0.5 * (bins[:-1] + bins[1:])
+            
+            for count in n:
+                list_Info.append(count)
             x_ticks = ax.get_xticks()
             y_ticks = ax.get_yticks()
             range_dict[field] = {
                 'x_range_point': x_ticks,
                 'y_range_point': y_ticks,
-                'group': data['bin_group']
+                'group': list_Info
             }
     plt.tight_layout()
     
