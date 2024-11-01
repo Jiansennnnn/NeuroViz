@@ -3,10 +3,11 @@ Flask==3.0.3
 Flask_Cors==5.0.0
 matplotlib==3.9.2
 numpy==2.1.2
-openai==1.52.2
+openai==1.53.0
 openpyxl==3.1.5
 pandas==2.2.3
 pydantic==2.9.2
+reportlab==4.2.5
 scikit_learn==1.5.2
 seaborn==0.13.2
-Werkzeug==3.0.5
+Werkzeug==3.1.0

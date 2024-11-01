@@ -15,11 +15,21 @@ from flask_util.config import ALLOWED_EXTENSIONS,UPLOAD_LANDING_FOLDER, SCRIPT_P
 from werkzeug.utils import secure_filename
 import subprocess
 import socket
-
-
+from ExportCore.ExportPDF import *
+ 
 
 logging.basicConfig(filename="backend_main.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
+
+
+
+Gjson_report = ''
+Gjson_source = ''
+Gstart_count = ''
+Gcorr_comment = ''
+GImg_path = ''
+GCorrMatrix = None
+GIdea = ''
 
 
 app = Flask(__name__)
@@ -156,6 +166,9 @@ async def upload_and_process():
             #Img_path
             selected_keys = ["histogram_img_path", "scatter_img_path"]
             Img_path =  {key: chart_set[key] for key in selected_keys if key in chart_set}
+            selected_keys = ["histogram_img_path", "scatter_img_path","line_img_path"]
+            Img_path_EXPORT =  {key: chart_set[key] for key in selected_keys if key in chart_set}
+
             #Img_range
             selected_keys = ["histogram_img_range", "scatter_img_range","line_img_range", "pie_img_range", "Kmean_img_range"]
             Img_range =  {key: chart_set[key] for key in selected_keys if key in chart_set}
@@ -175,6 +188,24 @@ async def upload_and_process():
             json_report = PackDataToJson(report_structured,img_path,result['chart_base64'],Idea_All)
             json_source = PackSourceToJson(clean_data)
             logger.info("**Pack all the data to FE Json format**............ succeeded")
+            
+            global Gjson_report
+            Gjson_report = report_structured
+            global GCorrMatrix
+            GCorrMatrix = analysis_results['correlation_matrix']
+            
+            global GIdea
+            GIdea = Idea_All
+            global Gjson_source
+            Gjson_source = json_source
+            global Gstart_count
+            Gstart_count = start_count
+            global Gcorr_comment
+            Gcorr_comment = corr_comment
+            global GImg_path
+            GImg_path = Img_path_EXPORT
+
+            
             
             
             return jsonify({
@@ -200,7 +231,17 @@ def ClearHistoryFiles():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+## Export PDF
+@app.route('/ExportPDF', methods=['GET'])
+def ExportPDF():
+    try:
+        
+        PDF_path = ExportCore(GIdea,GCorrMatrix,Gcorr_comment,GImg_path,Gjson_report)
 
+        return jsonify({'success': 'Exported PDF successful',
+                        "json_report": PDF_path}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # 注册蓝图
