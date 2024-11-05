@@ -7,7 +7,15 @@ from datetime import datetime
 import os
 import seaborn as sns
 from sklearn.cluster import KMeans
-
+import re
+def calculate_bin_midpoint(bin_str):
+    parts = re.split(r'-(?=\d)', bin_str)
+    if len(parts) != 2 or not all(parts):
+        return 0.0  
+    try:
+        return (float(parts[0]) + float(parts[1])) / 2
+    except ValueError:
+        return 0.0  
 def generate_chart_general(data,analysis_results,id_path):
     plt.ioff()
     try:
@@ -105,8 +113,8 @@ def generate_graph_histogram(data,id_path,xyfields):
             # 计算每个区间的中位数
             group_medians = data.groupby('bin_group')[y_field].median().reset_index()
             # 添加区间的中点
-            group_medians['bin_midpoint'] = group_medians['bin_group'].apply(
-            lambda x: (float(x.split('-')[0]) + float(x.split('-')[1])) / 2)
+            group_medians['bin_midpoint'] = group_medians['bin_group'].apply(calculate_bin_midpoint)
+
             # 按X轴中点排序
             #group_medians = group_medians.sort_values(by='bin_midpoint')
             n, bins, patches = ax.hist(data[field], bins=20, alpha=0.5, label=field, density=True, color=colors[i])
@@ -204,8 +212,8 @@ def generate_scatter_plot(data, analysis_results,id_path):
             # 计算每个区间的中位数
             group_medians = data.groupby('bin_group')[y_field].median().reset_index()
             # 添加区间的中点
-            group_medians['bin_midpoint'] = group_medians['bin_group'].apply(
-            lambda x: (float(x.split('-')[0]) + float(x.split('-')[1])) / 2)
+            group_medians['bin_midpoint'] = group_medians['bin_group'].apply(calculate_bin_midpoint)
+
             # 按X轴中点排序
             group_medians = group_medians.sort_values(by='bin_midpoint')
             
@@ -304,8 +312,8 @@ def generate_line_chart(data, analysis_results,id_path):
             # 计算每个区间的中位数
             group_medians = data.groupby('bin_group')[y_field].median().reset_index()
             # 添加区间的中点
-            group_medians['bin_midpoint'] = group_medians['bin_group'].apply(
-            lambda x: (float(x.split('-')[0]) + float(x.split('-')[1])) / 2)
+            group_medians['bin_midpoint'] = group_medians['bin_group'].apply(calculate_bin_midpoint)
+
             # 按X轴中点排序
             group_medians = group_medians.sort_values(by='bin_midpoint')
             # 结束动态分组并计算中位数

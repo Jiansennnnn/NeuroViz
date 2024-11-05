@@ -2,14 +2,24 @@
 # 对数据异常值进行处理，将数据类型出现最多次数的值填充
 
 def handle_missing_and_outliers(data):
+    # 分离数值类型和非数值类型列
+    numeric_columns = data.select_dtypes(include='number').columns
+    non_numeric_columns = data.select_dtypes(exclude='number').columns
+    
     # 用出现最多的值填充空值
-    for column in data.columns:
+    for column in non_numeric_columns:
         if data[column].isna().any():
             mode_value = data[column].mode()[0]
             data[column].fillna(mode_value, inplace=True)
 
+    # 用中位数填充数值类型列的空值
+    for column in numeric_columns:
+        if data[column].isna().any():
+            median_value = data[column].median()
+            data[column].fillna(median_value, inplace=True)
+    data[numeric_columns] = data[numeric_columns].astype('float64')
+
     # 用中位数填充离群值
-    numeric_columns = data.select_dtypes(include='number').columns
     for col in numeric_columns:
         q_low = data[col].quantile(0.01)
         q_hi = data[col].quantile(0.99)

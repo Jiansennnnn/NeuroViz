@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 def generate_report_general(quality_report, analysis_results):
     report = "Data Quality and Analysis Report:\n\n"
 
@@ -42,6 +45,14 @@ def generate_report_general(quality_report, analysis_results):
     return report
 
 
+def serialize_dict(data):
+    if isinstance(data, dict):
+        return {k: serialize_dict(v) for k, v in data.items()}
+    elif isinstance(data, pd.Series) or isinstance(data, pd.Index) or isinstance(data, np.ndarray) or isinstance(data,  np.int64):
+        return data.tolist()
+    else:
+        return data
+
 def generate_report_Json_structured(quality_report, analysis_results):
     
     descriptive_statistics = {}
@@ -56,17 +67,18 @@ def generate_report_Json_structured(quality_report, analysis_results):
         correlation_matrix[field] = {}
         for other_field, value in row.items():
             correlation_matrix[field][other_field] = value
+    
         
     report_Json_structured = {
         "title": "Data Quality and Analysis Report",
-        "missing_values": quality_report.get('missing_values',{}),
-        "outliers": quality_report.get('outliers',{}),
+        "missing_values": serialize_dict(quality_report.get('missing_values',{})),
+        "outliers": serialize_dict(quality_report.get('outliers',{})),
         "analysis_results": {
-            "statistical_analysis_fields": analysis_results['statistical_fields'],
+            "statistical_analysis_fields": serialize_dict(analysis_results['statistical_fields']),
             "x_axis_fields": [x.strip() for x in analysis_results['xy_fields']['x'].split(',')],
             "y_axis_field": analysis_results['xy_fields']['y'],
-            "descriptive_statistics": descriptive_statistics,
-            "correlation_matrix": correlation_matrix
+            "descriptive_statistics": serialize_dict(descriptive_statistics),
+            "correlation_matrix": serialize_dict(correlation_matrix)
         }
     }
     
