@@ -51,7 +51,7 @@ def allowed_file(filename):
 def serialize_dict(data):
     if isinstance(data, dict):
         return {k: serialize_dict(v) for k, v in data.items()}
-    elif isinstance(data, pd.Series) or isinstance(data, pd.Index) or isinstance(data, np.ndarray):
+    elif isinstance(data, pd.Series) or isinstance(data, pd.Index) or isinstance(data, np.ndarray) or isinstance(data,  np.int64):
         return data.tolist()
     else:
         return data
@@ -185,7 +185,7 @@ async def upload_and_process():
             logger.info("**Idea_Core_logics**............ succeeded")
             
             # Pack all the data to FE Json format
-            json_report = PackDataToJson(report_structured,img_path,result['chart_base64'],Idea_All)
+            json_report = PackDataToJson(report_structured,serialize_dict(img_path),result['chart_base64'],Idea_All)
             json_source = PackSourceToJson(clean_data)
             logger.info("**Pack all the data to FE Json format**............ succeeded")
             

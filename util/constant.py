@@ -1,5 +1,5 @@
 Model_PARAMS_Compute = {
-    "API_KEY": "sk-f2442c2f3d1e46259e647e880d0f606d",
+    "API_KEY": "sk-fa208afe522f4a8a8f17871a06fec3ca",
     "model_name": "qwen-vl-max",
     'max_retries': 3,
     "top_p": 0.45,
@@ -7,13 +7,23 @@ Model_PARAMS_Compute = {
 }
 #"model_name": "qwen-turbo-latest" for fast 
 Model_PARAMS_Comment = {
-    "API_KEY": "sk-f2442c2f3d1e46259e647e880d0f606d",
+    "API_KEY": "sk-fa208afe522f4a8a8f17871a06fec3ca",
     "model_name": "qwen2.5-14b-instruct",
     "response_format": {"type": "json_object"},
     'max_retries': 3,
     "top_p": 0.45,
     "temperature": 0.2
 }
+
+Model_PARAMS_NLP_LOCAL = {
+    "model_name": "qwen2.5-14b-instruct",
+    "response_format": {"type": "json_object"},
+    'max_retries': 3,
+    "top_p": 0.45,
+    "temperature": 0.2
+}
+
+
 
 LLM_PARAMS = {
     "system_prompt": """
